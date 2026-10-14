@@ -2,10 +2,12 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 import {
   createAccount,
   deleteAccount,
+  getBalances,
   listAccounts,
   listEntities,
   money,
   type Account,
+  type Balance,
   type Entity,
 } from "../api";
 
@@ -27,6 +29,9 @@ export default function Accounts() {
   const [notice, setNotice] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [creating, setCreating] = useState(false);
+  const [balancesEntity, setBalancesEntity] = useState<number | "">("");
+  const [balances, setBalances] = useState<Balance[] | null>(null);
+  const [loadingBalances, setLoadingBalances] = useState(false);
 
   const refresh = useCallback(() => {
     Promise.all([
@@ -87,6 +92,21 @@ export default function Accounts() {
 
   const entityCode = (id: number) =>
     entities.find((e) => e.id === id)?.code ?? `#${id}`;
+
+  // Fetch live TMS balances for the chosen entity (Kyriba mock or real).
+  const onFetchBalances = async () => {
+    if (balancesEntity === "") return;
+    setLoadingBalances(true);
+    setError(null);
+    try {
+      setBalances(await getBalances(balancesEntity));
+    } catch (err) {
+      setBalances(null);
+      setError((err as Error).message);
+    } finally {
+      setLoadingBalances(false);
+    }
+  };
 
   return (
     <>
@@ -256,6 +276,72 @@ export default function Accounts() {
                       Delete
                     </button>
                   </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      <div className="panel">
+        <div className="toolbar">
+          <h2 style={{ margin: 0 }}>Live TMS balances (Kyriba)</h2>
+          <span className="spacer" />
+          <label className="field" htmlFor="a-bal-entity" style={{ margin: 0 }}>
+            Entity
+          </label>
+          <select
+            id="a-bal-entity"
+            value={balancesEntity}
+            onChange={(e) => {
+              setBalancesEntity(e.target.value === "" ? "" : Number(e.target.value));
+              setBalances(null);
+            }}
+            style={{ width: 220 }}
+          >
+            <option value="" disabled>
+              Select an entity…
+            </option>
+            {entities.map((e) => (
+              <option key={e.id} value={e.id}>
+                {e.code}
+              </option>
+            ))}
+          </select>
+          <button
+            className="btn"
+            onClick={onFetchBalances}
+            disabled={balancesEntity === "" || loadingBalances}
+          >
+            {loadingBalances ? "Fetching…" : "Fetch from Kyriba"}
+          </button>
+        </div>
+        {balances === null ? (
+          <div className="empty">
+            Pick an entity and fetch to pull live balances from the TMS (mock data
+            by default).
+          </div>
+        ) : balances.length === 0 ? (
+          <div className="empty">Kyriba returned no balance rows for this entity.</div>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Entity</th>
+                <th>Bank</th>
+                <th>Currency</th>
+                <th className="num">Current</th>
+                <th className="num">Available</th>
+              </tr>
+            </thead>
+            <tbody>
+              {balances.map((b, i) => (
+                <tr key={`${b.bank_name}-${b.currency}-${i}`}>
+                  <td className="mono">{b.entity_code}</td>
+                  <td>{b.bank_name}</td>
+                  <td className="mono">{b.currency}</td>
+                  <td className="num">{money(b.current_balance, b.currency)}</td>
+                  <td className="num">{money(b.available_balance, b.currency)}</td>
                 </tr>
               ))}
             </tbody>

@@ -109,6 +109,15 @@ export interface ForecastPullResponse {
   source: string;
 }
 
+/** One row from GET /entities/{id}/balances (live from Kyriba, mock or real). */
+export interface Balance {
+  entity_code: string;
+  bank_name: string;
+  currency: string;
+  current_balance: string;
+  available_balance: string;
+}
+
 export interface Health {
   status: string;
   kyriba_mode: string;
@@ -199,6 +208,11 @@ export const pullForecast = (entityId: number) =>
 
 export const getForecast = (entityId: number) =>
   request<ForecastRow[]>(`/entities/${entityId}/forecast`);
+
+// --- Balances (live from Kyriba) ----------------------------------------------
+
+export const getBalances = (entityId: number) =>
+  request<Balance[]>(`/entities/${entityId}/balances`);
 
 // --- Formatting helpers -----------------------------------------------------
 

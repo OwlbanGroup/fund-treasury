@@ -8,7 +8,9 @@ React + Vite + TypeScript UI for the Fund Treasury API in
 - **Dashboard** — balance totals, pending/sent payment counts, latest forecast
   closing balance, recent payments.
 - **Entities** — list / create / delete legal entities.
-- **Accounts** — list (filterable by entity) / create / delete bank accounts.
+- **Accounts** — list (filterable by entity) / create / delete bank accounts,
+  plus a **Live TMS balances** panel that fetches current balances from Kyriba
+  via `GET /entities/{id}/balances` for a selected entity.
 - **Payments** — create a pending payment, then dispatch it with one click;
   shows the bank reference and outbox file returned by the bank client.
   Backend errors (e.g. duplicate reference → 409) surface inline.
