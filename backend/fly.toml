@@ -1,0 +1,32 @@
+# Fly.io configuration for the Fund Treasury API (deploy from backend/).
+app = "fund-treasury-api"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  KYRIBA_MODE = "mock"
+  BANK_MODE = "mock"
+  DEFAULT_CURRENCY = "USD"
+  # CORS: deployed frontend origin + local dev servers.
+  CORS_ORIGINS = "https://fund-treasury-web.fly.dev,http://localhost:5173,http://127.0.0.1:5173"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "15s"
+    method = "GET"
+    path = "/health"
+
+# Persistent volume for SQLite + bank file outbox (/data, set via env above).
+[mounts]
+  source = "fund_treasury_data"
+  destination = "/data"
