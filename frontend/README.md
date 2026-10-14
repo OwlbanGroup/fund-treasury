@@ -52,6 +52,19 @@ CORS configuration is needed in development.
 To point the built app at a non-local API, set `VITE_API_URL` (base URL,
 default empty = same origin) at build time.
 
+## Deployment (Fly.io)
+
+```powershell
+cd frontend
+flyctl apps create fund-treasury-web        # once
+flyctl deploy --yes --build-arg VITE_API_URL=https://fund-treasury-api.fly.dev
+```
+
+The multi-stage `Dockerfile` runs `npm ci` + the production build in Node 20
+and serves `dist/` from nginx (SPA fallback via `nginx.conf`). `VITE_API_URL`
+is baked into the bundle at build time, and the API's `CORS_ORIGINS` (see
+`backend/fly.toml`) must list this origin.
+
 ## Project layout
 
 ```

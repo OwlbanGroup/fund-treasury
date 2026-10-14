@@ -108,6 +108,28 @@ Copy `.env.example` to `.env` and edit, or set environment variables directly.
 | `BANK_FILE_OUTBOX` | `./outbox` | Where mock payment files are written |
 | `CORS_ORIGINS` | `localhost:5173` | Allowed origins (default matches a Vite dev server) |
 
+## Deployment (Fly.io)
+
+The backend ships with a hardened `Dockerfile` (Python 3.11 slim, non-root
+user) and a ready-to-use `fly.toml`:
+
+```powershell
+cd backend
+flyctl apps create fund-treasury-api                          # once
+flyctl volumes create fund_treasury_data --region iad --size 1 -a fund-treasury-api
+flyctl deploy --yes
+```
+
+- SQLite and the bank file outbox live on the `/data` volume (`DATABASE_URL` and
+  `BANK_FILE_OUTBOX` are set in `fly.toml`).
+- `CORS_ORIGINS` in `fly.toml` already allows the deployed frontend
+  (`https://fund-treasury-web.fly.dev`) alongside local dev servers.
+- The machine auto-stops when idle (`min_machines_running = 0`), has a `/health`
+  check, and runs in mock mode by default. Wire real Kyriba credentials with
+  `flyctl secrets set KYRIBA_CLIENT_ID=... KYRIBA_CLIENT_SECRET=... -a fund-treasury-api`.
+- Fly requires billing information on file before the first machine starts
+  (even within the free allowance): <https://fly.io/dashboard/david-leeper-9/billing>
+
 ## Project layout
 
 ```

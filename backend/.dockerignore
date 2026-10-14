@@ -1,0 +1,11 @@
+# Recursive patterns: caches were previously generated *inside* app/ and tests/.
+**/__pycache__/
+**/*.pyc
+**/.mypy_cache/
+**/.pytest_cache/
+**/.ruff_cache/
+tests/
+*.db
+outbox/
+.env
+*.md
