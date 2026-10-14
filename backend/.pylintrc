@@ -1,0 +1,28 @@
+# Pylint configuration for the Fund Treasury backend.
+# Usage (from backend/):  python -m pylint app tests conftest.py
+
+[MAIN]
+# SessionLocal: SQLAlchemy's canonical sessionmaker() variable name.
+good-names=SessionLocal
+
+[MESSAGES CONTROL]
+# Noise suppressed project-wide, with rationale:
+#   missing-class-docstring / missing-function-docstring - every module
+#     carries a module docstring (C0114 stays enabled); per-symbol
+#     docstrings are not enforced mechanically.
+#   too-few-public-methods (R0903) - ORM models and Settings legitimately
+#     expose 0-2 public methods.
+#   cyclic-import (R0401) - SQLAlchemy models import Base from
+#     app.database while init_db() imports the models; the module-level
+#     graph is acyclic, the reported cycle exists only via that
+#     function-level import.
+disable=
+    missing-class-docstring,
+    missing-function-docstring,
+    too-few-public-methods,
+    cyclic-import
+
+[DESIGN]
+# duplicate-code (R0801): only report clones of 10+ lines; the 8-line
+# block shared between Kyriba DTOs and API schemas is intentional layering.
+min-similarity-lines=10

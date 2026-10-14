@@ -1,0 +1,22 @@
+# Validated against Python 3.11.9 on Windows with these exact versions
+# (the automated test-suite and a live uvicorn run were verified against them).
+fastapi==0.104.1
+starlette==0.27.0
+uvicorn==0.24.0
+SQLAlchemy==2.0.23
+pydantic==2.5.0
+httpx==0.25.1
+python-dotenv==1.0.0
+pytest==9.1.0
+anyio==3.7.1
+
+# Optional: PostgreSQL driver, only needed when DATABASE_URL points at Postgres.
+# On Windows without build tools, the binary wheel below installs cleanly.
+# psycopg2-binary==2.9.10
+
+# --- Development tooling (lint + type-check) --------------------------------
+# Run from backend/:  python -m ruff check . / python -m mypy . / python -m pylint app
+ruff==0.17.0
+mypy==2.1.0
+pylint==4.0.6
+

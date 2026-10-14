@@ -1,0 +1,19 @@
+# Lint / type-check configuration for the Fund Treasury backend.
+# Pylint keeps its own config in .pylintrc (INI is its native format).
+
+[tool.ruff]
+target-version = "py311"
+
+[tool.ruff.lint]
+# E402 (import not at top of file): conftest.py intentionally sets
+# environment variables before importing app modules - selecting E402
+# explicitly keeps its `# noqa: E402` markers meaningful.
+extend-select = ["E402"]
+# B008 (function-call in argument default): FastAPI's Depends() injection
+# idiom relies on this pattern; flagging it is pure noise.
+ignore = ["B008"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["app", "tests", "conftest.py"]
+warn_unused_ignores = true
