@@ -1,0 +1,7 @@
+{
+  "p95_ms": {
+    "GET /health": 2000,
+    "GET /entities": 2000,
+    "forecast pull+read": 2000
+  }
+}

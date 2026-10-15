@@ -1,0 +1,26 @@
+# CODEOWNERS for OwlbanGroup/fund-treasury
+#
+# Purpose (from scorecard advisory): require review on every change and
+# guarantee a bus-factor > 1. Until a second committer is added, the single
+# owner below is the required reviewer.
+#
+# TODO-SECOND-COMMITTER:
+#   1. Invite the second committer to the repo (Settings > Collaborators)
+#      with Write or Maintain.
+#   2. Have them make one reviewed commit (proves the review loop works).
+#   3. Replace the placeholder line below with their @handle.
+#   4. Optionally create a team @OwlbanGroup/fund-treasury-owners and
+#      replace both individual handles with the team handle.
+
+# Default owner for everything (required review).
+* @ESADavid
+# Second committer slot — replace @PLACEHOLDER-second-committer with real handle:
+# * @PLACEHOLDER-second-committer
+
+# Sensitive areas — both owners must review once the second handle lands.
+# Uncomment the second handle when it exists.
+/backend/app/clients/ @ESADavid
+/backend/app/routers/payments.py @ESADavid
+/backend/app/routers/forecast.py @ESADavid
+/backend/app/models/ @ESADavid
+/.github/workflows/ @ESADavid
