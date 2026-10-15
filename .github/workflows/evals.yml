@@ -36,4 +36,4 @@ jobs:
       - name: Check CODEOWNERS exists and names an owner
         run: |
           test -f .github/CODEOWNERS
-          grep -q '^\\* @' .github/CODEOWNERS
+          grep -q '^\* @' .github/CODEOWNERS
